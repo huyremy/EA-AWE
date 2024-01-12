@@ -1,0 +1,134 @@
+#include <Trade\Trade.mqh>
+
+CTrade trade;
+
+double CalculateTradeSize(double accountBalance, double riskPercentage, double maxTradePercentage, int decimalPlaces)
+{
+   // Tính toán khối lượng giao dịch theo tỷ lệ phần trăm rủi ro
+   double tradeSize = accountBalance * riskPercentage / 100.0;
+
+   // Làm tròn giá trị khối lượng giao dịch đến số lượng chữ số sau dấu thập phân mong muốn
+   tradeSize = NormalizeDouble(tradeSize, decimalPlaces);
+
+   // Áp dụng giới hạn tối đa cho khối lượng giao dịch
+   double maxTradeSize = accountBalance * maxTradePercentage / 100.0;
+   tradeSize = MathMin(tradeSize, maxTradeSize);
+
+   return tradeSize;
+}
+void OnTick()
+  {
+// Risk manager---
+double accountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
+  
+   double riskPercentage = 1; // Tỷ lệ phần trăm rủi ro (vd: 1%)
+   double maxTradePercentage = 5; // Tỷ lệ phần trăm tối đa cho mỗi lệnh (vd: 5%)
+   int decimalPlaces = 2; // Số lượng chữ số sau dấu thập phân mong muốn
+      
+   double tradeSize = CalculateTradeSize(accountBalance, riskPercentage, maxTradePercentage, decimalPlaces);
+   
+   double abc =  tradeSize/200;
+   abc = NormalizeDouble(abc,decimalPlaces);
+//---- Stoploss and TP
+    double atrValue = iATR(_Symbol, PERIOD_M5, 14); // 15 là chu kỳ ATR
+
+    // Tính toán điểm Stop Loss và điểm Take Profit
+    double stopLoss = NormalizeDouble(atrValue, _Digits); // Sử dụng 1.5 lần giá trị ATR cho Stop Loss
+    double takeProfit = NormalizeDouble(atrValue, _Digits); // Sử dụng 2 lần giá trị ATR cho Take Profit
+    
+    double stoploss2 = NormalizeDouble(atrValue, _Digits); // Sử dụng 1.5 lần giá trị ATR cho Stop Loss
+    double takeprofit2 = NormalizeDouble(atrValue, _Digits); // Sử dụng 2 lần giá trị ATR cho Take Profit
+    
+
+    double Ask = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_ASK), _Digits);
+    double Bid = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_BID), _Digits);
+
+    string signal = "";
+//----
+
+    // Tính toán ATR
+    int MA_Period = 14; // Giá trị của chu kỳ trung bình di chuyển để tính toán chỉ số
+    double ATRValue = iATR(_Symbol, PERIOD_M5, MA_Period); // Lấy giá trị ATR
+
+    stopLoss = Ask - atrValue * 1.5;   // Tính toán Stop Loss
+    takeProfit = Ask + atrValue * 2.0; // Tính toán Take Profit
+    
+    stoploss2 = Bid - ATRValue * 2.0;
+    takeprofit2 = Bid + ATRValue * 1.5;
+    // thêm atr check
+   double PriceArray[];
+   int ASOD = iAO(_Symbol, _Period);
+   
+   ArraySetAsSeries(PriceArray, true);
+   
+   CopyBuffer(ASOD, 0, 0, 3, PriceArray);
+   double ASODV = NormalizeDouble(PriceArray[0], 6);
+   
+   if( ASODV > 0 && PositionsTotal() < 1){
+      int myTakeProfitValue = 100;
+      trade.Buy(abc,_Symbol, Ask,(Ask - stopLoss * _Point), Ask+takeProfit * _Point,NULL);
+      CheckTrailingStopB(Bid);
+      Print("Mua giá:", Bid);
+      Print("Điểm Stop Loss: ", stopLoss);
+      Print("Điểm Take Profit: ", takeProfit);
+      Comment("AI-AutoTrade\nhuynq@isi.com.vn\nTín Hiệu: ", signal);
+   
+   }
+   if(ASODV < 0 && PositionsTotal() < 1){
+      signal = "sell";
+      int myTakeProfitValue = 100;
+      double BalanceA = AccountInfoDouble(ACCOUNT_BALANCE);
+      double EnquityA = AccountInfoDouble(ACCOUNT_EQUITY);
+      trade.Sell(abc, NULL, Bid, (Bid + takeprofit2 * _Point), (Bid-stoploss2* _Point), "HuyRemy");
+      CheckTrailingStopB(Bid);
+      Print("Mua giá:", Bid);
+      Print("Điểm Stop Loss: ", stopLoss);
+      Print("Điểm Take Profit: ", takeProfit);
+      Comment("AI-ASOD\nhuynq@isi.com.vn\nTín Hiệu: ", signal);
+   }
+  }
+//+------------------------------------------------------------------+
+void CheckTrailingStop(double Ask)
+{
+    double atrValue = iATR(_Symbol, PERIOD_M5, 14);
+    double takeProfit = Ask + atrValue * 2.0;
+    double SL = NormalizeDouble(Ask - 150 * _Point, _Digits);
+
+    for (int i = PositionsTotal() - 1; i >= 0; i--)
+    {
+        string symbol = PositionGetSymbol(i);
+
+        if (_Symbol == symbol)
+        {
+            ulong PositionTicket = PositionGetInteger(POSITION_TICKET);
+            double CurrentStopLoss = PositionGetDouble(POSITION_SL);
+
+            if (CurrentStopLoss < SL)
+            {
+                trade.PositionModify(PositionTicket, (CurrentStopLoss + 10 * _Point),(Ask + takeProfit* _Point));
+            }
+        }
+    }
+}
+void CheckTrailingStopB(double Bid)
+{
+    double atrValue = iATR(_Symbol, PERIOD_M5, 14);
+    double takeProfit = Bid - atrValue * 1.5;
+    double SL = NormalizeDouble(Bid + 250 * _Point, _Digits);
+
+    for (int i = PositionsTotal() - 1; i >= 0; i--)
+    {
+        string symbol = PositionGetSymbol(i);
+
+        if (_Symbol == symbol)
+        {
+            ulong PositionTicket = PositionGetInteger(POSITION_TICKET);
+            double CurrentStopLoss = PositionGetDouble(POSITION_SL);
+
+            if (CurrentStopLoss > SL)
+            {
+                trade.PositionModify(PositionTicket, (CurrentStopLoss - 150 * _Point),(Bid - takeProfit * _Point));
+            }
+        }
+    }
+}
