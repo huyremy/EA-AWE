@@ -67,7 +67,7 @@ double accountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
    if( ASODV > 0 && PositionsTotal() < 1){
       int myTakeProfitValue = 100;
       trade.Buy(abc,_Symbol, Ask,(Ask - stopLoss * _Point), Ask+takeProfit * _Point,NULL);
-      CheckTrailingStopB(Bid);
+      //CheckTrailingStopB(Bid);
       Print("Mua giá:", Bid);
       Print("Điểm Stop Loss: ", stopLoss);
       Print("Điểm Take Profit: ", takeProfit);
@@ -80,7 +80,7 @@ double accountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
       double BalanceA = AccountInfoDouble(ACCOUNT_BALANCE);
       double EnquityA = AccountInfoDouble(ACCOUNT_EQUITY);
       trade.Sell(abc, NULL, Bid, (Bid + takeprofit2 * _Point), (Bid-stoploss2* _Point), "HuyRemy");
-      CheckTrailingStopB(Bid);
+      //CheckTrailingStopB(Bid);
       Print("Mua giá:", Bid);
       Print("Điểm Stop Loss: ", stopLoss);
       Print("Điểm Take Profit: ", takeProfit);
@@ -88,47 +88,3 @@ double accountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
    }
   }
 //+------------------------------------------------------------------+
-void CheckTrailingStop(double Ask)
-{
-    double atrValue = iATR(_Symbol, PERIOD_M5, 14);
-    double takeProfit = Ask + atrValue * 2.0;
-    double SL = NormalizeDouble(Ask - 150 * _Point, _Digits);
-
-    for (int i = PositionsTotal() - 1; i >= 0; i--)
-    {
-        string symbol = PositionGetSymbol(i);
-
-        if (_Symbol == symbol)
-        {
-            ulong PositionTicket = PositionGetInteger(POSITION_TICKET);
-            double CurrentStopLoss = PositionGetDouble(POSITION_SL);
-
-            if (CurrentStopLoss < SL)
-            {
-                trade.PositionModify(PositionTicket, (CurrentStopLoss + 10 * _Point),(Ask + takeProfit* _Point));
-            }
-        }
-    }
-}
-void CheckTrailingStopB(double Bid)
-{
-    double atrValue = iATR(_Symbol, PERIOD_M5, 14);
-    double takeProfit = Bid - atrValue * 1.5;
-    double SL = NormalizeDouble(Bid + 250 * _Point, _Digits);
-
-    for (int i = PositionsTotal() - 1; i >= 0; i--)
-    {
-        string symbol = PositionGetSymbol(i);
-
-        if (_Symbol == symbol)
-        {
-            ulong PositionTicket = PositionGetInteger(POSITION_TICKET);
-            double CurrentStopLoss = PositionGetDouble(POSITION_SL);
-
-            if (CurrentStopLoss > SL)
-            {
-                trade.PositionModify(PositionTicket, (CurrentStopLoss - 150 * _Point),(Bid - takeProfit * _Point));
-            }
-        }
-    }
-}
