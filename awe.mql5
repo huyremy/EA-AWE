@@ -77,8 +77,6 @@ double accountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
    if(ASODV < 0 && PositionsTotal() < 1){
       signal = "sell";
       int myTakeProfitValue = 100;
-      double BalanceA = AccountInfoDouble(ACCOUNT_BALANCE);
-      double EnquityA = AccountInfoDouble(ACCOUNT_EQUITY);
       trade.Sell(abc, NULL, Bid, (Bid + takeprofit2 * _Point), (Bid-stoploss2* _Point), "HuyRemy");
       //CheckTrailingStopB(Bid);
       Print("Mua giá:", Bid);
