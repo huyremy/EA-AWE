@@ -2,33 +2,8 @@
 
 CTrade trade;
 
-double CalculateTradeSize(double accountBalance, double riskPercentage, double maxTradePercentage, int decimalPlaces)
-{
-   // Tính toán khối lượng giao dịch theo tỷ lệ phần trăm rủi ro
-   double tradeSize = accountBalance * riskPercentage / 100.0;
-
-   // Làm tròn giá trị khối lượng giao dịch đến số lượng chữ số sau dấu thập phân mong muốn
-   tradeSize = NormalizeDouble(tradeSize, decimalPlaces);
-
-   // Áp dụng giới hạn tối đa cho khối lượng giao dịch
-   double maxTradeSize = accountBalance * maxTradePercentage / 100.0;
-   tradeSize = MathMin(tradeSize, maxTradeSize);
-
-   return tradeSize;
-}
 void OnTick()
   {
-// Risk manager---
-double accountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
-  
-   double riskPercentage = 1; // Tỷ lệ phần trăm rủi ro (vd: 1%)
-   double maxTradePercentage = 5; // Tỷ lệ phần trăm tối đa cho mỗi lệnh (vd: 5%)
-   int decimalPlaces = 2; // Số lượng chữ số sau dấu thập phân mong muốn
-      
-   double tradeSize = CalculateTradeSize(accountBalance, riskPercentage, maxTradePercentage, decimalPlaces);
-   
-   double abc =  tradeSize/200;
-   abc = NormalizeDouble(abc,decimalPlaces);
 //---- Stoploss and TP
     double atrValue = iATR(_Symbol, PERIOD_M5, 14); // 15 là chu kỳ ATR
 
@@ -66,7 +41,7 @@ double accountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
    
    if( ASODV > 0 && PositionsTotal() < 1){
       int myTakeProfitValue = 100;
-      trade.Buy(abc,_Symbol, Ask,(Ask - stopLoss * _Point), Ask+takeProfit * _Point,NULL);
+      trade.Buy(1,_Symbol, Ask,(Ask - stopLoss * _Point), Ask+takeProfit * _Point,NULL);
       //CheckTrailingStopB(Bid);
       Print("Mua giá:", Bid);
       Print("Điểm Stop Loss: ", stopLoss);
@@ -77,7 +52,7 @@ double accountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
    if(ASODV < 0 && PositionsTotal() < 1){
       signal = "sell";
       int myTakeProfitValue = 100;
-      trade.Sell(abc, NULL, Bid, (Bid + takeprofit2 * _Point), (Bid-stoploss2* _Point), "HuyRemy");
+      trade.Sell(1, NULL, Bid, (Bid + takeprofit2 * _Point), (Bid-stoploss2* _Point), "HuyRemy");
       //CheckTrailingStopB(Bid);
       Print("Mua giá:", Bid);
       Print("Điểm Stop Loss: ", stopLoss);
