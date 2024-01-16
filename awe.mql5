@@ -42,7 +42,6 @@ void OnTick()
    if( ASODV > 0 && PositionsTotal() < 1){
       int myTakeProfitValue = 100;
       trade.Buy(1,_Symbol, Ask,(Ask - stopLoss * _Point), Ask+takeProfit * _Point,NULL);
-      //CheckTrailingStopB(Bid);
       Print("Mua giá:", Bid);
       Print("Điểm Stop Loss: ", stopLoss);
       Print("Điểm Take Profit: ", takeProfit);
@@ -53,7 +52,6 @@ void OnTick()
       signal = "sell";
       int myTakeProfitValue = 100;
       trade.Sell(1, NULL, Bid, (Bid + takeprofit2 * _Point), (Bid-stoploss2* _Point), "HuyRemy");
-      //CheckTrailingStopB(Bid);
       Print("Mua giá:", Bid);
       Print("Điểm Stop Loss: ", stopLoss);
       Print("Điểm Take Profit: ", takeProfit);
