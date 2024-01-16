@@ -1,3 +1,5 @@
+huynq@isi.com.vn
+-----------
 https://www.youtube.com/watch?v=Is4CwM_a0Y0 
 -----------
 ![image](https://github.com/huyremy/EA-AWE/assets/2125897/6709ed39-22e1-4eb0-9ed8-03a05c85d6ac)
