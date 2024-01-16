@@ -55,7 +55,7 @@ void OnTick()
       Print("Mua giá:", Bid);
       Print("Điểm Stop Loss: ", stopLoss);
       Print("Điểm Take Profit: ", takeProfit);
-      Comment("AI-ASOD\nhuynq@isi.com.vn\nTín Hiệu: ", signal);
+      Comment("AI-AutoTrade\nhuynq@isi.com.vn\nTín Hiệu: ", signal);
    }
   }
 //+------------------------------------------------------------------+
