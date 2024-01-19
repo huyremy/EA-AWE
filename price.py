@@ -36,8 +36,9 @@ while True:
     filename = 'xauusd.json'
     with open(filename, 'w') as json_file:
         json.dump(data, json_file)
-        time.sleep(5)
-    # Tạm dừng chương trình trong 5 giây
+        time.sleep(1)
+    # Tạm dừng chương trình trong 1 giây. 
+
 
 # Đóng kết nối với MetaTrader 5
 mt5.shutdown()
