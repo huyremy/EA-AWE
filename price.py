@@ -25,6 +25,9 @@ while True:
     ask = str(chart_info[0][5])  # Chuyển đổi giá ask thành chuỗi
     time2 = datetime.utcfromtimestamp(chart_info[0][0]).strftime('%Y-%m-%d %H:%M:%S')
     print("XAUUSD:", bid, " ", time2, "\n")
+    # chart data
+    print(chart_info, "\n"); 
+
     # Tạo đối tượng dữ liệu JSON
     data = {
         'time': time2,
