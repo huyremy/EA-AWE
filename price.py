@@ -8,7 +8,7 @@ if not mt5.initialize():
     print("Không thể kết nối tới MetaTrader 5")
     exit(1)
 
-# Chọn ký hiệu (symbol) của XAUUSD và khung biểu đồ H1 (1 giờ)
+# Chọn ký hiệu (symbol) của XAUUSD và khung biểu đồ ví dụ H1 (1 giờ)
 symbol = "XAUUSD"
 timeframe = mt5.TIMEFRAME_M1
 
