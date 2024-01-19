@@ -2,7 +2,7 @@ import json
 import time
 from datetime import datetime
 import MetaTrader5 as mt5
-# Huyremy bypass login
+# Huyremy bypass login get root price
 # Kết nối tới MetaTrader 5
 if not mt5.initialize():
     print("Không thể kết nối tới MetaTrader 5")
