@@ -32,7 +32,8 @@ while True:
     data = {
         'time': time2,
         'bid': bid,
-        'ask': ask
+        'ask': ask,
+        'chart': chart_info
     }
 
     # Ghi dữ liệu vào tệp JSON
